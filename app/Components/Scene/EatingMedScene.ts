@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import easyData from "@/public/data/gameData";
 
-export default class EatingGameScene extends Phaser.Scene {
+export default class EatingMedScene extends Phaser.Scene {
     player:Phaser.Physics.Arcade.Image|null=null
     blocks: Phaser.Physics.Arcade.StaticGroup | null = null;
     cursors:Phaser.Types.Input.Keyboard.CursorKeys|null=null
@@ -9,7 +9,7 @@ export default class EatingGameScene extends Phaser.Scene {
     topRightImage:Phaser.Physics.Arcade.Image|null=null
     botLeftImage:Phaser.Physics.Arcade.Image|null=null
     botRIghtImage:Phaser.Physics.Arcade.Image|null=null
-    centerImage:Phaser.GameObjects.Image|null=null
+    centertext:Phaser.GameObjects.Text|null=null
     gameNo:number=0
     score:number=0
     scoreText:Phaser.GameObjects.Text|null=null
@@ -19,19 +19,12 @@ export default class EatingGameScene extends Phaser.Scene {
     remainingTime: number = 60; // 1 minute in seconds
     timerEvent: Phaser.Time.TimerEvent | null = null;
     playSoundTimer: Phaser.Time.TimerEvent | null = null;
-    
-    thing1:Phaser.Physics.Arcade.Image|null=null
-    thing2:Phaser.Physics.Arcade.Image|null=null
-
-    thing3:Phaser.Physics.Arcade.Image|null=null
-
-    
 
 
 
 
   constructor() {
-    super("eatinggame-scene");
+    super("eatingmed-scene");
   }
 
   preload() {
@@ -47,9 +40,6 @@ export default class EatingGameScene extends Phaser.Scene {
        const bleft=easyData[i].botLeft
        const bright=easyData[i].botRight
         const voice=easyData[i].sound
-        const thing1=easyData[i].thing1
-        const thing2=easyData[i].thing2
-        const thing3=easyData[i].thing3
         const voiceName=easyData[i].soundName
 
        this.load.audio(voiceName,voice)
@@ -59,12 +49,8 @@ export default class EatingGameScene extends Phaser.Scene {
        const bleftname=easyData[i].botLeftName
        const brightname=easyData[i].botRightName
 
-       const mainImage=easyData[i].main
-       const mainImageName=easyData[i].mainName
-       const thing1Name=easyData[i].thing1Name
-       const thing2Name=easyData[i].thing2Name
-       const thing3Name=easyData[i].thing3Name
-       this.load.image(mainImageName,mainImage)
+      
+
 
        if(tleft && tleftname){
         this.load.image(tleftname,tleft)
@@ -78,15 +64,6 @@ export default class EatingGameScene extends Phaser.Scene {
        }
        if(bright && brightname){
         this.load.image(brightname,bright)
-       }
-       if(thing1 && thing1Name){
-        this.load.image(thing1Name,thing1)
-       }
-       if(thing2 && thing2Name){
-        this.load.image(thing2Name,thing2)
-       }
-       if(thing3 && thing3Name){
-        this.load.image(thing3Name,thing3)
        }
 
     }
@@ -104,22 +81,29 @@ export default class EatingGameScene extends Phaser.Scene {
     const bleftname=easyData[this.gameNo].botLeftName
     const brightname=easyData[this.gameNo].botRightName
     const mainName=easyData[this.gameNo].mainName
-    const thing1Name=easyData[this.gameNo].thing1Name
-    const thing2Name=easyData[this.gameNo].thing2Name
-    const thing3Name=easyData[this.gameNo].thing3Name
 
     // this.playSound()
     // setInterval(()=>this.playSound(),7000)
    
-      // this.playSound();
-      // this.startSoundLoop()
-
-     
-
+      this.playSound();
+      this.startSoundLoop()
+   
+   
 
     
 
-    this.centerImage=this.add.image(475,360,mainName).setScale(0.2,0.2)
+    this.centertext=this.add.text(410,330,mainName,{
+      fontSize:'25px',
+      
+      color:'#000000',
+      backgroundColor:'#FFFFFF',
+      fixedHeight:60,
+      fixedWidth:130,
+      align:'center',
+      padding:{
+        top:15
+      }
+    })
 
     if(tleftname){
         this.topLeftImage=this.physics.add.image(90,110,tleftname).setScale(0.25,0.23).setImmovable(true)
@@ -235,46 +219,6 @@ export default class EatingGameScene extends Phaser.Scene {
         this.cursors=this.input.keyboard.createCursorKeys()
 
     }
-    const positionArray=[
-      {
-        x:210,
-        y:170,
-      },
-      {
-        x:340,
-        y:400,
-      },
-      {
-        x:500,
-        y:460,
-      },
-      {
-        x:400,
-        y:460,
-      },
-    ]
-
-
-
-    if (thing1Name) {
-    
-      this.thing1 = this.physics.add.image(210,170, thing1Name).setScale(0.1, 0.1).setDepth(1);
-    }
-    if (thing2Name) {
-
-    
-
-
-    
-      this.thing2 = this.physics.add.image(340, 400, thing2Name).setScale(0.1, 0.1).setDepth(1);
-    }
-    if (thing3Name) {
-    
-
-
-      this.thing3 = this.physics.add.image(500, 460, thing3Name).setScale(0.1, 0.1).setDepth(1);
-    }
-    
 
     this.physics.add.collider(this.player, this.blocks);
 
@@ -386,7 +330,7 @@ this.botRIghtImage?.destroy()
     const brightname=easyData[this.gameNo].botRightName
     const mainName=easyData[this.gameNo].mainName
 
-    this.centerImage?.setTexture(mainName)
+    this.centertext?.setText(mainName)
     if(this.player){
     if(tleftname){
         this.topLeftImage=this.physics.add.image(90,110,tleftname).setScale(0.25,0.23).setImmovable(true)
@@ -443,9 +387,9 @@ this.botRIghtImage?.destroy()
     }
     handleGameEnd() {
       console.log("Game over! Time's up!");
-      this.stopSoundLoop()
       window.location.href = `/Result?score=${this.score}`;
 
+      this.stopSoundLoop()
       // Transition to the result screen or restart the game
     } 
     
@@ -476,29 +420,5 @@ this.botRIghtImage?.destroy()
           this.sound.play(soundName);
       }
   }
-
-  isPositionFree(x: number, y: number, blocks: Phaser.Physics.Arcade.StaticGroup): boolean {
-    let isFree = true;
-    blocks.getChildren().forEach((block: Phaser.GameObjects.GameObject) => {
-         const blockBounds = (block as Phaser.GameObjects.Image).getBounds();;
-      if (Phaser.Geom.Intersects.RectangleToRectangle(blockBounds, new Phaser.Geom.Rectangle(x, y, 32, 32))) {
-        isFree = false;
-      }
-    });
-    return isFree;
-  }
-
-  generateFreePosition(blocks: Phaser.Physics.Arcade.StaticGroup): { x: number; y: number } {
-    let x: number, y: number;
-    do {
-      x = Phaser.Math.RND.integerInRange(40, 900);
-      y = Phaser.Math.RND.integerInRange(40, 700);
-    } while (!this.isPositionFree(x, y, blocks));
-    return { x, y };
-  }
-  
-  
-
-
 
 }

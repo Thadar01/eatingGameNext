@@ -2,21 +2,37 @@
 import Phaser from 'phaser'
 import React, { useEffect, useRef } from 'react'
 import EatingGameScene from './Scene/EatingGameScene'
+import EatingMedScene from './Scene/EatingMedScene'
+import EatingHardScene from './Scene/EatingHardScene'
 
-const GameComponet = () => {
+interface gameType{
+  name:string|null
+}
+const GameComponet:React.FC<gameType> = ({name}) => {
   const gameRef=useRef<Phaser.Game|null>(null)
 
 
   useEffect(()=>{
     if(gameRef.current){
       return;
+
+
+    }
+
+    const scenes = [];
+    if (name === 'easy') {
+      scenes.push(EatingGameScene);
+    }else if(name==='med'){
+      scenes.push(EatingMedScene)
+    }else if(name=='hard'){
+      scenes.push(EatingHardScene)
     }
 
     const config:Phaser.Types.Core.GameConfig={
       type:Phaser.AUTO,
       width:950,
       height:700,
-      scene:[EatingGameScene],
+      scene:scenes,
       physics:{
         default:'arcade',
         arcade:{
